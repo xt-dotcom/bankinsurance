@@ -4,148 +4,161 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bankinsurance</title>
+
   <style>
     :root{
-      --glassA: rgba(255,255,255,0.62);
-      --glassB: rgba(255,255,255,0.38);
-      --text: #0b1b2a;
-      --muted: rgba(11,27,42,0.62);
-      --shadowPanel: 0 18px 50px rgba(0,0,0,0.22);
-      --shadowTile: 0 12px 22px rgba(0,0,0,0.10);
-      --shadowTileHover: 0 18px 32px rgba(0,0,0,0.14);
-      --radius: 22px;
-      --tileRadius: 20px;
+      --txt: #0b1b2a;
+      --muted: rgba(11,27,42,.62);
+
+      /* Glass */
+      --panel: rgba(210, 230, 242, 0.55);   /* proche Navimeteo */
+      --tile:  rgba(214, 235, 247, 0.62);
+      --tile2: rgba(214, 235, 247, 0.48);
+
+      --radiusPanel: 26px;
+      --radiusTile:  22px;
+      --radiusIcon:  16px;
+
+      --shadowPanel: 0 20px 55px rgba(0,0,0,.18);
+      --shadowTile:  0 14px 28px rgba(0,0,0,.12);
+      --shadowTileH: 0 18px 36px rgba(0,0,0,.16);
     }
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--txt);
       overflow:hidden;
     }
 
-    /* Background */
+    /* Background like Navimeteo: image + voile doux */
     .bg{
-      position:fixed; inset:0;
+      position: fixed; inset: 0;
       background:
-        linear-gradient(180deg, rgba(12,34,58,0.28) 0%, rgba(12,34,58,0.10) 55%, rgba(12,34,58,0.08) 100%),
+        linear-gradient(180deg, rgba(30,70,100,.18) 0%, rgba(30,70,100,.08) 55%, rgba(30,70,100,.06) 100%),
         url("banques.jpg") center/cover no-repeat;
       transform: scale(1.02);
-      filter: saturate(1.05);
+      filter: saturate(1.02);
     }
     .bg::after{
       content:"";
       position:absolute; inset:0;
-      background: radial-gradient(1100px 650px at 78% 20%, rgba(255,255,255,0.22), transparent 60%);
+      background:
+        radial-gradient(1100px 700px at 70% 18%, rgba(255,255,255,.22), transparent 60%);
       pointer-events:none;
     }
 
-    /* Layout: responsive & scroll-safe */
+    /* Layout */
     .app{
-      position:relative;
-      height:100%;
+      position: relative;
+      height: 100%;
+      padding: clamp(18px, 4vw, 52px);
       display:flex;
       align-items:flex-start;
-      justify-content:flex-end;
-      padding: clamp(12px, 3vw, 40px);
+      justify-content:flex-start; /* Navimeteo : bloc plutôt à gauche */
     }
 
+    /* Panel (no “window chrome”) */
     .panel{
-      width: min(560px, 94vw);
-      max-height: calc(100vh - 2 * clamp(12px, 3vw, 40px));
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, var(--glassA) 0%, rgba(255,255,255,0.52) 100%);
+      width: min(980px, 92vw);
+      border-radius: var(--radiusPanel);
+      background: linear-gradient(180deg, rgba(210,230,242,.62), rgba(210,230,242,.42));
       box-shadow: var(--shadowPanel);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-    }
-
-    /* Content can scroll if height is small */
-    .content{
-      padding: clamp(14px, 2.4vw, 22px);
+      padding: clamp(18px, 2.6vw, 26px);
+      max-height: calc(100vh - 2 * clamp(18px, 4vw, 52px));
       overflow:auto;
       -webkit-overflow-scrolling: touch;
     }
 
     h1{
-      margin: 2px 0 2px;
-      font-size: clamp(26px, 3.4vw, 34px);
-      letter-spacing: -0.4px;
+      margin: 4px 0 4px;
+      font-size: clamp(28px, 3.6vw, 40px);
+      letter-spacing: -0.6px;
     }
     .subtitle{
-      margin: 0 0 16px;
+      margin: 0 0 18px;
       color: var(--muted);
       font-weight: 650;
-      font-size: clamp(12px, 1.6vw, 14px);
+      font-size: clamp(12px, 1.6vw, 15px);
     }
 
-    /* Grid becomes 2 columns when it fits, else 1 column */
+    /* Tiles grid: like Navimeteo (4 sur une ligne quand large, sinon s’adapte) */
     .grid{
       display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(4, minmax(210px, 1fr));
+      gap: clamp(14px, 1.8vw, 18px);
     }
 
-    /* Tiles: NO border/frame, only glass + shadow */
+    /* Responsive breakpoints */
+    @media (max-width: 1100px){
+      .grid{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    }
+    @media (max-width: 560px){
+      .app{ justify-content:center; }
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Tile: NO border frame, glass + shadow only */
     .tile{
       display:flex;
       align-items:center;
-      gap:14px;
-      padding: 14px 14px;
-      border-radius: var(--tileRadius);
-      background: linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.30));
+      gap: 14px;
+      padding: 18px 18px;
+      min-height: 106px;
+
+      border-radius: var(--radiusTile);
+      background: linear-gradient(180deg, var(--tile), var(--tile2));
       box-shadow: var(--shadowTile);
-      cursor:pointer;
-      user-select:none;
-      transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
-      min-height: 92px;
+
       text-decoration:none;
       color: inherit;
+
+      transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
+      border: none;
       outline: none;
-      border: none;              /* important */
+      -webkit-tap-highlight-color: transparent;
     }
     .tile:hover{
       transform: translateY(-1px);
-      box-shadow: var(--shadowTileHover);
-      background: linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.36));
+      box-shadow: var(--shadowTileH);
+      background: linear-gradient(180deg, rgba(225,245,255,.68), rgba(214,235,247,.50));
     }
-    .tile:active{
-      transform: translateY(0px) scale(0.99);
-    }
+    .tile:active{ transform: scale(.99); }
+    .tile:focus, .tile:focus-visible{ outline:none; }
 
-    /* Icon: NO border/frame */
-    .iconWrap{
-      width:56px; height:56px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.42);
+    /* Icon capsule like Navimeteo */
+    .icon{
+      width: 62px;
+      height: 62px;
+      border-radius: var(--radiusIcon);
+      background: rgba(255,255,255,.35);
       display:grid;
       place-items:center;
-      flex: 0 0 auto;
+      box-shadow: 0 10px 18px rgba(0,0,0,.10);
       overflow:hidden;
-      border: none;              /* important */
-      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+      flex: 0 0 auto;
     }
-    .iconWrap img{
-      width: 40px;
-      height: 40px;
+    .icon img{
+      width: 42px;
+      height: 42px;
       object-fit: contain;
     }
 
-    .tileText{ line-height:1.1; min-width: 0; }
-    .tileTitle{
+    .ttext{ min-width:0; }
+    .ttitle{
+      margin:0;
       font-weight: 820;
-      font-size: 16px;
-      margin: 0;
+      font-size: 17px;
+      line-height: 1.1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .tileDesc{
+    .tdesc{
       margin: 6px 0 0;
       color: var(--muted);
       font-weight: 650;
@@ -155,17 +168,11 @@
       text-overflow: ellipsis;
     }
 
-    /* On very small screens: center panel */
-    @media (max-width: 720px){
-      .app{ justify-content:center; }
+    /* Optional: if you want the last row to align like Navimeteo (single tile left) */
+    .span2{
+      grid-column: span 2;
     }
-
-    /* On very low height: reduce spacing a bit */
-    @media (max-height: 620px){
-      .subtitle{ margin-bottom: 12px; }
-      .tile{ min-height: 84px; }
-      .grid{ gap: 12px; }
-    }
+    @media (max-width: 1100px){ .span2{ grid-column: auto; } }
   </style>
 </head>
 
@@ -174,51 +181,50 @@
 
   <main class="app">
     <section class="panel" role="application" aria-label="Bankinsurance launcher">
-      <div class="content">
-        <h1>Bankinsurance</h1>
-        <p class="subtitle">Banques · Assurances · Accès client</p>
+      <h1>Bankinsurance</h1>
+      <p class="subtitle">Banques · Assurances · Accès client</p>
 
-        <div class="grid">
-          <a class="tile" href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes" target="_blank" rel="noopener">
-            <div class="iconWrap"><img src="bnpparibas.png" alt="BNP Paribas"></div>
-            <div class="tileText">
-              <p class="tileTitle">BNP</p>
-              <p class="tileDesc">Ma banque</p>
-            </div>
-          </a>
+      <div class="grid">
+        <a class="tile" href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes" target="_blank" rel="noopener">
+          <div class="icon"><img src="bnpparibas.png" alt="BNP Paribas"></div>
+          <div class="ttext">
+            <p class="ttitle">BNP</p>
+            <p class="tdesc">Ma banque</p>
+          </div>
+        </a>
 
-          <a class="tile" href="https://www.banquepopulaire.fr/professionnels/" target="_blank" rel="noopener">
-            <div class="iconWrap"><img src="banquepopulaire.png" alt="Banque Populaire"></div>
-            <div class="tileText">
-              <p class="tileTitle">Banque Populaire</p>
-              <p class="tileDesc">Espace pro</p>
-            </div>
-          </a>
+        <a class="tile" href="https://www.banquepopulaire.fr/professionnels/" target="_blank" rel="noopener">
+          <div class="icon"><img src="banquepopulaire.png" alt="Banque Populaire"></div>
+          <div class="ttext">
+            <p class="ttitle">Banque Populaire</p>
+            <p class="tdesc">Espace pro</p>
+          </div>
+        </a>
 
-          <a class="tile" href="https://fortuneo.fr" target="_blank" rel="noopener">
-            <div class="iconWrap"><img src="fortuneo.png" alt="Fortuneo"></div>
-            <div class="tileText">
-              <p class="tileTitle">Fortuneo</p>
-              <p class="tileDesc">Banque en ligne</p>
-            </div>
-          </a>
+        <a class="tile" href="https://fortuneo.fr" target="_blank" rel="noopener">
+          <div class="icon"><img src="fortuneo.png" alt="Fortuneo"></div>
+          <div class="ttext">
+            <p class="ttitle">Fortuneo</p>
+            <p class="tdesc">Banque en ligne</p>
+          </div>
+        </a>
 
-          <a class="tile" href="https://www.matmut.fr/app/login/login?returnurl=https%3A%2F%2Fwww.matmut.fr%2Fapp%2FEspaceSocietaireInternet%2F%23%2Faccueil" target="_blank" rel="noopener">
-            <div class="iconWrap"><img src="matmut.png" alt="Matmut"></div>
-            <div class="tileText">
-              <p class="tileTitle">Matmut</p>
-              <p class="tileDesc">Espace client</p>
-            </div>
-          </a>
+        <a class="tile" href="https://www.matmut.fr/app/login/login?returnurl=https%3A%2F%2Fwww.matmut.fr%2Fapp%2FEspaceSocietaireInternet%2F%23%2Faccueil" target="_blank" rel="noopener">
+          <div class="icon"><img src="matmut.png" alt="Matmut"></div>
+          <div class="ttext">
+            <p class="ttitle">Matmut</p>
+            <p class="tdesc">Espace client</p>
+          </div>
+        </a>
 
-          <a class="tile" href="https://espace-client.allianz.fr/" target="_blank" rel="noopener">
-            <div class="iconWrap"><img src="allianz.png" alt="Allianz"></div>
-            <div class="tileText">
-              <p class="tileTitle">Allianz</p>
-              <p class="tileDesc">Espace client</p>
-            </div>
-          </a>
-        </div>
+        <!-- Comme Navimeteo : une tuile seule en dernière ligne (option) -->
+        <a class="tile span2" href="https://espace-client.allianz.fr/" target="_blank" rel="noopener">
+          <div class="icon"><img src="allianz.png" alt="Allianz"></div>
+          <div class="ttext">
+            <p class="ttitle">Allianz</p>
+            <p class="tdesc">Espace client</p>
+          </div>
+        </a>
       </div>
     </section>
   </main>
