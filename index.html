@@ -23,10 +23,11 @@
       --shadow-tile: 0 10px 22px rgba(0,0,0,.14);
       --shadow-tile-hover: 0 16px 32px rgba(0,0,0,.18);
 
-      /* Dashboard pills (light) */
-      --pill-bg: rgba(255,255,255,.22);
-      --pill-border: rgba(0,25,60,.10);
-      --pill-text: rgba(11,31,58,.86);
+      /* ✅ Dashboard pills plus lisibles */
+      --pill-bg: rgba(255,255,255,.34);         /* + opaque */
+      --pill-border: rgba(0,25,60,.14);         /* + contraste */
+      --pill-text: rgba(7,24,45,.92);           /* + foncé */
+      --pill-shadow: 0 10px 18px rgba(0,0,0,.12);
     }
 
     *{ box-sizing:border-box; }
@@ -71,7 +72,7 @@
       color: var(--muted);
     }
 
-    /* ✅ Dashboard light (discret) */
+    /* ✅ Dashboard light (discret + lisible) */
     .dash{
       margin-top: 12px;
       display:flex;
@@ -84,26 +85,32 @@
       display:inline-flex;
       align-items:center;
       gap: 8px;
-      padding: 8px 10px;
+      padding: 8px 11px;
       border-radius: 999px;
 
       background: var(--pill-bg);
       border: 1px solid var(--pill-border);
-      box-shadow: 0 10px 20px rgba(0,0,0,.10);
+      box-shadow: var(--pill-shadow);
 
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
 
       color: var(--pill-text);
-      font-size: 12px;
-      font-weight: 750;
-      letter-spacing: .2px;
+      font-size: 13px;            /* + lisible */
+      font-weight: 800;           /* + lisible */
+      letter-spacing: .1px;
       white-space: nowrap;
     }
 
-    .pill small{
-      font-weight: 700;
-      opacity: .75;
+    .pill .muted{
+      font-weight: 750;
+      opacity: .82;
+    }
+
+    .wxIcon{
+      font-size: 15px;
+      line-height: 1;
+      transform: translateY(1px);
     }
 
     .section{ margin-top: 26px; }
@@ -164,7 +171,7 @@
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.16));
     }
 
-    /* Tooltip custom */
+    /* Tooltip */
     .tile[data-tip]::after{
       content: attr(data-tip);
       position:absolute;
@@ -185,7 +192,6 @@
       pointer-events:none;
       transition: opacity .14s ease, transform .14s ease;
     }
-
     .tile[data-tip]::before{
       content:"";
       position:absolute;
@@ -199,7 +205,6 @@
       pointer-events:none;
       transition: opacity .14s ease, transform .14s ease;
     }
-
     .tile:hover::after,
     .tile:hover::before,
     .tile:focus-visible::after,
@@ -207,13 +212,11 @@
       opacity: 1;
       transform: translateX(-50%) translateY(-2px);
     }
-
     .tile:focus-visible{
       outline: 3px solid rgba(36,74,117,.35);
       outline-offset: 3px;
     }
 
-    /* Responsive */
     @media (max-width: 720px){
       :root{ --tile-w: 150px; --tile-h: 104px; --gap: 16px; }
       .wrap{ padding: 28px 18px 36px; }
@@ -233,11 +236,15 @@
       <h1>Bankinsurance</h1>
       <div class="subtitle">Banques • Assurances • Accès client</div>
 
-      <!-- ✅ Dashboard light -->
       <div class="dash" aria-label="Dashboard">
-        <div class="pill" id="dashTime">🕒 <small>--:--</small></div>
-        <div class="pill" id="dashDate">📅 <small>--</small></div>
-        <div class="pill" id="dashWx">📍 <small>Météo : …</small></div>
+        <div class="pill" id="dashTime">🕒 <span class="muted">--:--</span></div>
+        <div class="pill" id="dashDate">📅 <span class="muted">--</span></div>
+
+        <!-- ✅ Icône + ville + météo -->
+        <div class="pill" id="dashWx">
+          <span class="wxIcon" id="wxIcon">📍</span>
+          <span class="muted" id="wxText">Météo : …</span>
+        </div>
       </div>
     </header>
 
@@ -294,20 +301,22 @@
 
     function tick(){
       const now = new Date();
-      document.getElementById('dashTime').innerHTML = '🕒 <small>' + fmtTime.format(now) + '</small>';
-      document.getElementById('dashDate').innerHTML = '📅 <small>' + fmtDate.format(now) + '</small>';
+      document.getElementById('dashTime').innerHTML = '🕒 <span class="muted">' + fmtTime.format(now) + '</span>';
+      document.getElementById('dashDate').innerHTML = '📅 <span class="muted">' + fmtDate.format(now) + '</span>';
     }
     tick();
     setInterval(tick, 1000 * 15);
 
-    // Météo locale (Open-Meteo, sans clé)
-    const wxEl = document.getElementById('dashWx');
+    // --- Météo locale (Open-Meteo) + Ville (reverse geocoding) ---
+    const wxTextEl = document.getElementById('wxText');
+    const wxIconEl = document.getElementById('wxIcon');
 
-    function wxText(s){
-      wxEl.innerHTML = '📍 <small>' + s + '</small>';
+    function setWx(icon, text){
+      wxIconEl.textContent = icon;
+      wxTextEl.textContent = text;
     }
 
-    const wxCodeToTextFR = (code) => {
+    const codeToDescFR = (code) => {
       const map = {
         0:"Ciel dégagé",
         1:"Plutôt dégagé", 2:"Partiellement nuageux", 3:"Couvert",
@@ -325,40 +334,75 @@
       return map[code] || "Météo";
     };
 
+    // Mini icône (emoji) selon weathercode (simple + efficace)
+    const codeToIcon = (code) => {
+      if (code === 0) return "☀️";
+      if (code >= 1 && code <= 3) return "🌤️";
+      if (code === 45 || code === 48) return "🌫️";
+      if ((code >= 51 && code <= 57) || (code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return "🌧️";
+      if (code >= 71 && code <= 77) return "🌨️";
+      if (code >= 95) return "⛈️";
+      return "🌡️";
+    };
+
+    async function reverseGeocodeCity(lat, lon){
+      // Open-Meteo reverse geocoding (sans clé)
+      const url = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=fr`;
+      const r = await fetch(url, { cache: "no-store" });
+      const j = await r.json();
+      const place = j && j.results && j.results[0];
+      if(!place) return null;
+      // place.name + admin1 (région) parfois utile
+      return place.name || null;
+    }
+
     async function fetchWeather(lat, lon){
-      // current_weather=true renvoie température, vent, code météo
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&windspeed_unit=kmh`;
       const r = await fetch(url, { cache: "no-store" });
       const j = await r.json();
       const cw = j.current_weather;
       if(!cw) throw new Error("no current_weather");
 
-      const t = Math.round(cw.temperature);
-      const w = Math.round(cw.windspeed);
-      const desc = wxCodeToTextFR(cw.weathercode);
+      const temp = Math.round(cw.temperature);
+      const wind = Math.round(cw.windspeed);
+      const code = cw.weathercode;
 
-      wxText(`${desc} • ${t}°C • Vent ${w} km/h`);
+      const desc = codeToDescFR(code);
+      const icon = codeToIcon(code);
+
+      // Ville
+      let city = null;
+      try { city = await reverseGeocodeCity(lat, lon); } catch(e) {}
+      const cityPart = city ? `${city} • ` : "";
+
+      setWx(icon, `${cityPart}${desc} • ${temp}°C • Vent ${wind} km/h`);
     }
 
-    function getLocationAndWeather(){
-      wxText("Météo : localisation…");
+    function askWeather(){
+      setWx("📍", "Météo : autoriser la localisation");
       if(!navigator.geolocation){
-        wxText("Météo : géoloc indisponible");
+        setWx("⚠️", "Météo : géoloc indisponible");
         return;
       }
+
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const { latitude, longitude } = pos.coords;
-          fetchWeather(latitude, longitude).catch(() => wxText("Météo : indisponible"));
+          setWx("⏳", "Météo : chargement…");
+          fetchWeather(latitude, longitude)
+            .catch(() => setWx("⚠️", "Météo : indisponible"));
         },
-        () => wxText("Météo : autorisation refusée"),
-        { enableHighAccuracy:false, timeout: 8000, maximumAge: 60 * 60 * 1000 }
+        (err) => {
+          // Permission refusée / bloquée
+          setWx("📍", "Météo : localisation refusée");
+        },
+        { enableHighAccuracy:false, timeout: 9000, maximumAge: 60 * 60 * 1000 }
       );
     }
 
-    getLocationAndWeather();
-    // rafraîchit toutes les 30 minutes
-    setInterval(getLocationAndWeather, 1000 * 60 * 30);
+    askWeather();
+    // Rafraîchit toutes les 30 minutes
+    setInterval(askWeather, 1000 * 60 * 30);
   </script>
 </body>
 </html>
