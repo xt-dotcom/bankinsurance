@@ -10,16 +10,18 @@
       --text: #0b1f3a;
       --muted: rgba(11,31,58,.72);
 
-      --tile-bg: rgba(255,255,255,.18);
-      --tile-bg-hover: rgba(255,255,255,.26);
-      --tile-border: rgba(0,25,60,.10);
+      /* ✅ moins transparent = plus "tuile" */
+      --tile-bg: rgba(255,255,255,.26);
+      --tile-bg-hover: rgba(255,255,255,.34);
+      --tile-border: rgba(0,25,60,.12);
 
-      /* ✅ Rectangles fixes, plus compacts, coins carrés */
-      --tile-w: 220px;
-      --tile-h: 78px;
+      /* ✅ quasi carrés (Canal+ vibe) */
+      --tile-w: 160px;
+      --tile-h: 110px;
       --radius: 0px;
 
-      --gap: 14px;
+      /* ✅ espace un peu plus grand */
+      --gap: 18px;
 
       --shadow-tile: 0 10px 22px rgba(0,0,0,.14);
       --shadow-tile-hover: 0 16px 32px rgba(0,0,0,.18);
@@ -89,7 +91,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 12px 16px;
+      padding: 14px 14px;
 
       background: var(--tile-bg);
       border: 1px solid var(--tile-border);
@@ -115,9 +117,10 @@
     }
     .tile:active{ transform: translateY(-1px) scale(.99); }
 
+    /* ✅ logos centrés, adaptés au format quasi carré */
     .tile img{
       max-width: 100%;
-      max-height: 50px; /* ✅ ajusté à la nouvelle hauteur */
+      max-height: 70px;
       object-fit: contain;
       display:block;
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.16));
@@ -172,15 +175,16 @@
       outline-offset: 3px;
     }
 
-    /* Responsive: un peu plus petit, puis full width */
+    /* Responsive */
     @media (max-width: 720px){
-      :root{ --tile-w: 200px; --tile-h: 74px; }
+      :root{ --tile-w: 150px; --tile-h: 104px; --gap: 16px; }
       .wrap{ padding: 28px 18px 36px; }
-      .tile img{ max-height: 48px; }
+      .tile img{ max-height: 66px; }
     }
     @media (max-width: 480px){
-      :root{ --tile-w: 100%; --tile-h: 74px; }
+      :root{ --tile-w: 100%; --tile-h: 96px; }
       .tile{ width: 100%; }
+      .tile img{ max-height: 64px; }
     }
   </style>
 </head>
