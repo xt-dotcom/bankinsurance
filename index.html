@@ -8,17 +8,18 @@
   <style>
     :root{
       --text: #0b1f3a;
-      --muted: rgba(11,31,58,.70);
+      --muted: rgba(11,31,58,.72);
 
-      /* tiles "Canal+ style" but light */
       --tile-bg: rgba(255,255,255,.18);
       --tile-bg-hover: rgba(255,255,255,.26);
       --tile-border: rgba(0,25,60,.10);
 
-      --radius: 18px;
+      /* style Canal+: rectangles fixes */
+      --tile-w: 260px;
+      --tile-h: 92px;
+      --radius: 8px;
       --gap: 14px;
 
-      --shadow: 0 14px 35px rgba(0,0,0,.20);
       --shadow-tile: 0 10px 22px rgba(0,0,0,.14);
       --shadow-tile-hover: 0 16px 32px rgba(0,0,0,.18);
     }
@@ -32,10 +33,9 @@
       color: var(--text);
       background: url("banques.jpg") no-repeat center center fixed;
       background-size: cover;
-      overflow-x: hidden;
+      overflow-x:hidden;
     }
 
-    /* léger voile pour que ça marche sur tout fond */
     body::before{
       content:"";
       position: fixed;
@@ -52,18 +52,12 @@
       padding: 38px 26px 44px;
     }
 
-    header{
-      margin-bottom: 18px;
-    }
-
     h1{
       margin:0;
       font-size: 28px;
       font-weight: 900;
-      letter-spacing: .2px;
-      color: #07182d;
+      color:#07182d;
     }
-
     .subtitle{
       margin-top: 6px;
       font-size: 14px;
@@ -71,34 +65,32 @@
       color: var(--muted);
     }
 
-    .section{
-      margin-top: 28px;
-    }
-
+    .section{ margin-top: 28px; }
     .section h2{
       margin: 0 0 12px;
       font-size: 16px;
       font-weight: 850;
-      letter-spacing: .2px;
-      color: #07182d;
-      text-transform: none;
+      color:#07182d;
     }
 
-    /* GRID super responsive */
+    /* ✅ Grille façon Canal+: tuiles fixes + wrap */
     .grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      display:flex;
+      flex-wrap:wrap;
       gap: var(--gap);
+      align-items:flex-start;
     }
 
-    /* tiles logos only */
+    /* tuile */
     .tile{
+      width: var(--tile-w);
+      height: var(--tile-h);
+      border-radius: var(--radius);
+
       display:flex;
       align-items:center;
       justify-content:center;
-      height: 92px;
-      padding: 14px 16px;
-      border-radius: var(--radius);
+      padding: 14px 18px;
 
       background: var(--tile-bg);
       border: 1px solid var(--tile-border);
@@ -110,29 +102,21 @@
       text-decoration:none;
       color: inherit;
 
-      transition: transform .22s cubic-bezier(.2,.8,.2,1),
-                  background .22s ease,
-                  box-shadow .22s ease;
+      position: relative; /* pour tooltip */
+      transition: transform .18s cubic-bezier(.2,.8,.2,1),
+                  background .18s ease,
+                  box-shadow .18s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
     .tile:hover{
-      transform: translateY(-4px);
+      transform: translateY(-3px);
       background: var(--tile-bg-hover);
       box-shadow: var(--shadow-tile-hover);
     }
+    .tile:active{ transform: translateY(-1px) scale(.99); }
 
-    .tile:active{
-      transform: translateY(-1px) scale(.99);
-    }
-
-    /* focus clavier propre */
-    .tile:focus-visible{
-      outline: 3px solid rgba(36,74,117,.35);
-      outline-offset: 3px;
-    }
-
-    /* logos non-carrés */
+    /* Logo */
     .tile img{
       max-width: 100%;
       max-height: 58px;
@@ -141,16 +125,64 @@
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.16));
     }
 
-    /* petite amélioration : logos très “fins” => un poil plus grand */
-    .tile img.wide{
-      max-height: 62px;
+    /* ✅ Tooltip custom (visible au survol et au focus) */
+    .tile[data-tip]::after{
+      content: attr(data-tip);
+      position:absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%);
+      white-space: nowrap;
+      padding: 8px 10px;
+      border-radius: 10px;
+
+      background: rgba(10,20,35,.82);
+      color: rgba(255,255,255,.96);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: .2px;
+
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .14s ease, transform .14s ease;
     }
 
-    /* mobile */
-    @media (max-width: 600px){
+    .tile[data-tip]::before{
+      content:"";
+      position:absolute;
+      left: 50%;
+      bottom: calc(100% + 4px);
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: rgba(10,20,35,.82);
+
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .14s ease, transform .14s ease;
+    }
+
+    .tile:hover::after,
+    .tile:hover::before,
+    .tile:focus-visible::after,
+    .tile:focus-visible::before{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    /* Focus clavier propre */
+    .tile:focus-visible{
+      outline: 3px solid rgba(36,74,117,.35);
+      outline-offset: 3px;
+    }
+
+    /* Responsive: réduire la taille fixe sur petit écran */
+    @media (max-width: 720px){
+      :root{ --tile-w: 220px; --tile-h: 86px; }
       .wrap{ padding: 28px 18px 36px; }
-      .grid{ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-      .tile{ height: 88px; }
+    }
+    @media (max-width: 480px){
+      :root{ --tile-w: 100%; --tile-h: 86px; }
+      .tile{ width: 100%; }
     }
   </style>
 </head>
@@ -167,19 +199,22 @@
       <div class="grid">
         <a class="tile" href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes"
            target="_blank" rel="noopener"
-           title="BNP — Ma banque" aria-label="BNP — Ma banque">
+           aria-label="BNP — Ma banque"
+           data-tip="BNP — Ma banque">
           <img src="bnpparibas.png" alt="BNP Paribas">
         </a>
 
         <a class="tile" href="https://www.banquepopulaire.fr/professionnels/"
            target="_blank" rel="noopener"
-           title="Banque Populaire — Espace pro" aria-label="Banque Populaire — Espace pro">
+           aria-label="Banque Populaire — Espace pro"
+           data-tip="Banque Populaire — Espace pro">
           <img src="banquepopulaire.png" alt="Banque Populaire">
         </a>
 
         <a class="tile" href="https://fortuneo.fr"
            target="_blank" rel="noopener"
-           title="Fortuneo — Banque en ligne" aria-label="Fortuneo — Banque en ligne">
+           aria-label="Fortuneo — Banque en ligne"
+           data-tip="Fortuneo — Banque en ligne">
           <img src="fortuneo.png" alt="Fortuneo">
         </a>
       </div>
@@ -190,13 +225,15 @@
       <div class="grid">
         <a class="tile" href="https://www.matmut.fr/app/login/login?returnurl=https%3A%2F%2Fwww.matmut.fr%2Fapp%2FEspaceSocietaireInternet%2F%23%2Faccueil"
            target="_blank" rel="noopener"
-           title="Matmut — Espace client" aria-label="Matmut — Espace client">
+           aria-label="Matmut — Espace client"
+           data-tip="Matmut — Espace client">
           <img src="matmut.png" alt="Matmut">
         </a>
 
         <a class="tile" href="https://espace-client.allianz.fr/"
            target="_blank" rel="noopener"
-           title="Allianz — Espace client" aria-label="Allianz — Espace client">
+           aria-label="Allianz — Espace client"
+           data-tip="Allianz — Espace client">
           <img src="allianz.png" alt="Allianz">
         </a>
       </div>
