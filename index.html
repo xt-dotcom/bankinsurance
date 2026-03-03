@@ -8,19 +8,23 @@
   <style>
     :root{
       --text: #0b1f3a;
-      --muted: #244a75;
+      --muted: rgba(11,31,58,.70);
 
-      --glass: rgba(255,255,255,.28);
-      --glass-hover: rgba(255,255,255,.38);
-      --border: rgba(0,25,60,.12);
+      /* tiles "Canal+ style" but light */
+      --tile-bg: rgba(255,255,255,.18);
+      --tile-bg-hover: rgba(255,255,255,.26);
+      --tile-border: rgba(0,25,60,.10);
 
-      --radius: 26px;
-      --tile: 200px;
-      --gap: 22px;
+      --radius: 18px;
+      --gap: 14px;
+
+      --shadow: 0 14px 35px rgba(0,0,0,.20);
+      --shadow-tile: 0 10px 22px rgba(0,0,0,.14);
+      --shadow-tile-hover: 0 16px 32px rgba(0,0,0,.18);
     }
 
     *{ box-sizing:border-box; }
-    html, body{ height:100%; }
+    html,body{ height:100%; }
 
     body{
       margin:0;
@@ -28,207 +32,175 @@
       color: var(--text);
       background: url("banques.jpg") no-repeat center center fixed;
       background-size: cover;
+      overflow-x: hidden;
     }
 
+    /* léger voile pour que ça marche sur tout fond */
     body::before{
       content:"";
       position: fixed;
       inset:0;
-      background: rgba(255,255,255,.03);
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(255,255,255,.14), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.05));
       z-index:-1;
     }
 
     .wrap{
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 40px 28px;
+      padding: 38px 26px 44px;
+    }
+
+    header{
+      margin-bottom: 18px;
     }
 
     h1{
       margin:0;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: .5px;
-      color:#07182d;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      color: #07182d;
     }
 
     .subtitle{
       margin-top: 6px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 650;
       color: var(--muted);
     }
 
+    .section{
+      margin-top: 28px;
+    }
+
+    .section h2{
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 850;
+      letter-spacing: .2px;
+      color: #07182d;
+      text-transform: none;
+    }
+
+    /* GRID super responsive */
     .grid{
-      margin-top: 40px;
       display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(var(--tile), 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: var(--gap);
     }
 
-    a.tile{
+    /* tiles logos only */
+    .tile{
       display:flex;
-      flex-direction:column;
+      align-items:center;
       justify-content:center;
-      gap:16px;
-      padding:28px 22px;
+      height: 92px;
+      padding: 14px 16px;
       border-radius: var(--radius);
 
-      background: var(--glass);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--border);
+      background: var(--tile-bg);
+      border: 1px solid var(--tile-border);
+      box-shadow: var(--shadow-tile);
+
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
 
       text-decoration:none;
-      color:inherit;
-      transition: transform .30s cubic-bezier(.2,.8,.2,1),
-                  background .30s ease,
-                  box-shadow .30s ease;
-      box-shadow: 0 20px 50px rgba(0,0,0,.15);
+      color: inherit;
+
+      transition: transform .22s cubic-bezier(.2,.8,.2,1),
+                  background .22s ease,
+                  box-shadow .22s ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    a.tile:hover{
-      transform: translateY(-8px) scale(1.04);
-      background: var(--glass-hover);
-      box-shadow: 0 30px 70px rgba(0,0,0,.22);
+    .tile:hover{
+      transform: translateY(-4px);
+      background: var(--tile-bg-hover);
+      box-shadow: var(--shadow-tile-hover);
     }
 
-    .row{
-      display:flex;
-      align-items:center;
-      gap:18px;
-      min-width: 0;
+    .tile:active{
+      transform: translateY(-1px) scale(.99);
     }
 
-    /* 🔥 FIX IMPORTANT pour éviter débordement */
-    .row > div{
-      min-width: 0;
+    /* focus clavier propre */
+    .tile:focus-visible{
+      outline: 3px solid rgba(36,74,117,.35);
+      outline-offset: 3px;
     }
 
-    .icon{
-      width:72px;
-      height:72px;
-      border-radius:22px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-
-      background: rgba(11,31,58,.08);
-      border: 1px solid rgba(11,31,58,.10);
-
-      flex: 0 0 auto;
-      overflow:hidden;
-    }
-
-    .icon img{
-      width: 46px;
-      height: 46px;
+    /* logos non-carrés */
+    .tile img{
+      max-width: 100%;
+      max-height: 58px;
       object-fit: contain;
       display:block;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
-      transform: translateZ(0);
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.16));
     }
 
-    a.tile:hover .icon img{
-      transform: scale(1.06);
-      transition: transform .30s cubic-bezier(.2,.8,.2,1);
+    /* petite amélioration : logos très “fins” => un poil plus grand */
+    .tile img.wide{
+      max-height: 62px;
     }
 
-    .name{
-      display:block;
-      max-width:100%;
-      font-size:17px;
-      font-weight:800;
-      margin:0;
-      color:#07182d;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .desc{
-      margin:0;
-      font-size:13px;
-      font-weight:600;
-      color: rgba(11,31,58,.75);
-      line-height: 1.25;
-    }
-
+    /* mobile */
     @media (max-width: 600px){
-      :root{ --tile: 170px; }
-      .wrap{ padding: 28px 20px; }
+      .wrap{ padding: 28px 18px 36px; }
+      .grid{ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+      .tile{ height: 88px; }
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <h1>Bankinsurance</h1>
-    <div class="subtitle">Banques • Assurances • Accès client</div>
+    <header>
+      <h1>Bankinsurance</h1>
+      <div class="subtitle">Banques • Assurances • Accès client</div>
+    </header>
 
-    <div class="grid">
+    <section class="section" aria-label="Banques">
+      <h2>Banques</h2>
+      <div class="grid">
+        <a class="tile" href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes"
+           target="_blank" rel="noopener"
+           title="BNP — Ma banque" aria-label="BNP — Ma banque">
+          <img src="bnpparibas.png" alt="BNP Paribas">
+        </a>
 
-      <a class="tile" href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes" target="_blank" rel="noopener">
-        <div class="row">
-          <div class="icon">
-            <img src="bnpparibas.png" alt="BNP Paribas">
-          </div>
-          <div>
-            <p class="name">BNP</p>
-            <p class="desc">Ma banque</p>
-          </div>
-        </div>
-      </a>
+        <a class="tile" href="https://www.banquepopulaire.fr/professionnels/"
+           target="_blank" rel="noopener"
+           title="Banque Populaire — Espace pro" aria-label="Banque Populaire — Espace pro">
+          <img src="banquepopulaire.png" alt="Banque Populaire">
+        </a>
 
-      <a class="tile" href="https://www.banquepopulaire.fr/professionnels/" target="_blank" rel="noopener">
-        <div class="row">
-          <div class="icon">
-            <img src="banquepopulaire.png" alt="Banque Populaire">
-          </div>
-          <div>
-            <p class="name">Banque Populaire</p>
-            <p class="desc">Espace pro</p>
-          </div>
-        </div>
-      </a>
+        <a class="tile" href="https://fortuneo.fr"
+           target="_blank" rel="noopener"
+           title="Fortuneo — Banque en ligne" aria-label="Fortuneo — Banque en ligne">
+          <img src="fortuneo.png" alt="Fortuneo">
+        </a>
+      </div>
+    </section>
 
-      <a class="tile" href="https://fortuneo.fr" target="_blank" rel="noopener">
-        <div class="row">
-          <div class="icon">
-            <img src="fortuneo.png" alt="Fortuneo">
-          </div>
-          <div>
-            <p class="name">Fortuneo</p>
-            <p class="desc">Banque en ligne</p>
-          </div>
-        </div>
-      </a>
+    <section class="section" aria-label="Assurances">
+      <h2>Assurances</h2>
+      <div class="grid">
+        <a class="tile" href="https://www.matmut.fr/app/login/login?returnurl=https%3A%2F%2Fwww.matmut.fr%2Fapp%2FEspaceSocietaireInternet%2F%23%2Faccueil"
+           target="_blank" rel="noopener"
+           title="Matmut — Espace client" aria-label="Matmut — Espace client">
+          <img src="matmut.png" alt="Matmut">
+        </a>
 
-      <a class="tile" href="https://www.matmut.fr/app/login/login?returnurl=https%3A%2F%2Fwww.matmut.fr%2Fapp%2FEspaceSocietaireInternet%2F%23%2Faccueil" target="_blank" rel="noopener">
-        <div class="row">
-          <div class="icon">
-            <img src="matmut.png" alt="Matmut">
-          </div>
-          <div>
-            <p class="name">Matmut</p>
-            <p class="desc">Espace client</p>
-          </div>
-        </div>
-      </a>
-
-      <a class="tile" href="https://espace-client.allianz.fr/" target="_blank" rel="noopener">
-        <div class="row">
-          <div class="icon">
-            <img src="allianz.png" alt="Allianz">
-          </div>
-          <div>
-            <p class="name">Allianz</p>
-            <p class="desc">Espace client</p>
-          </div>
-        </div>
-      </a>
-
-    </div>
+        <a class="tile" href="https://espace-client.allianz.fr/"
+           target="_blank" rel="noopener"
+           title="Allianz — Espace client" aria-label="Allianz — Espace client">
+          <img src="allianz.png" alt="Allianz">
+        </a>
+      </div>
+    </section>
   </div>
 </body>
 </html>
