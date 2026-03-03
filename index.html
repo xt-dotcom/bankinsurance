@@ -14,10 +14,11 @@
       --tile-bg-hover: rgba(255,255,255,.26);
       --tile-border: rgba(0,25,60,.10);
 
-      /* style Canal+: rectangles fixes */
-      --tile-w: 260px;
-      --tile-h: 92px;
-      --radius: 8px;
+      /* ✅ Rectangles fixes, plus compacts, coins carrés */
+      --tile-w: 220px;
+      --tile-h: 78px;
+      --radius: 0px;
+
       --gap: 14px;
 
       --shadow-tile: 0 10px 22px rgba(0,0,0,.14);
@@ -73,7 +74,6 @@
       color:#07182d;
     }
 
-    /* ✅ Grille façon Canal+: tuiles fixes + wrap */
     .grid{
       display:flex;
       flex-wrap:wrap;
@@ -81,7 +81,6 @@
       align-items:flex-start;
     }
 
-    /* tuile */
     .tile{
       width: var(--tile-w);
       height: var(--tile-h);
@@ -90,7 +89,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 14px 18px;
+      padding: 12px 16px;
 
       background: var(--tile-bg);
       border: 1px solid var(--tile-border);
@@ -102,7 +101,7 @@
       text-decoration:none;
       color: inherit;
 
-      position: relative; /* pour tooltip */
+      position: relative;
       transition: transform .18s cubic-bezier(.2,.8,.2,1),
                   background .18s ease,
                   box-shadow .18s ease;
@@ -116,16 +115,15 @@
     }
     .tile:active{ transform: translateY(-1px) scale(.99); }
 
-    /* Logo */
     .tile img{
       max-width: 100%;
-      max-height: 58px;
+      max-height: 50px; /* ✅ ajusté à la nouvelle hauteur */
       object-fit: contain;
       display:block;
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.16));
     }
 
-    /* ✅ Tooltip custom (visible au survol et au focus) */
+    /* Tooltip custom */
     .tile[data-tip]::after{
       content: attr(data-tip);
       position:absolute;
@@ -169,19 +167,19 @@
       transform: translateX(-50%) translateY(-2px);
     }
 
-    /* Focus clavier propre */
     .tile:focus-visible{
       outline: 3px solid rgba(36,74,117,.35);
       outline-offset: 3px;
     }
 
-    /* Responsive: réduire la taille fixe sur petit écran */
+    /* Responsive: un peu plus petit, puis full width */
     @media (max-width: 720px){
-      :root{ --tile-w: 220px; --tile-h: 86px; }
+      :root{ --tile-w: 200px; --tile-h: 74px; }
       .wrap{ padding: 28px 18px 36px; }
+      .tile img{ max-height: 48px; }
     }
     @media (max-width: 480px){
-      :root{ --tile-w: 100%; --tile-h: 86px; }
+      :root{ --tile-w: 100%; --tile-h: 74px; }
       .tile{ width: 100%; }
     }
   </style>
