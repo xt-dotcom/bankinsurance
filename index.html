@@ -1,408 +1,244 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bankinsurance</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bankinsurance</title>
 
-  <style>
-    :root{
-      --text: #0b1f3a;
-      --muted: rgba(11,31,58,.72);
+<style>
+:root{
+  --text:#0b1f3a;
+  --muted:rgba(11,31,58,.72);
 
-      --tile-bg: rgba(255,255,255,.26);
-      --tile-bg-hover: rgba(255,255,255,.34);
-      --tile-border: rgba(0,25,60,.12);
+  --tile-bg:rgba(255,255,255,.26);
+  --tile-bg-hover:rgba(255,255,255,.34);
+  --tile-border:rgba(0,25,60,.12);
 
-      /* Ratio officiel */
-      --tile-w: 160px;
-      --tile-h: 110px;
-      --radius: 0px;
-      --gap: 18px;
+  --tile-w:160px;
+  --tile-h:110px;
+  --gap:18px;
+  --radius:0px;
 
-      --shadow-tile: 0 10px 22px rgba(0,0,0,.14);
-      --shadow-tile-hover: 0 16px 32px rgba(0,0,0,.18);
+  --shadow-tile:0 10px 22px rgba(0,0,0,.14);
+  --shadow-tile-hover:0 16px 32px rgba(0,0,0,.18);
 
-      /* ✅ Dashboard pills plus lisibles */
-      --pill-bg: rgba(255,255,255,.34);         /* + opaque */
-      --pill-border: rgba(0,25,60,.14);         /* + contraste */
-      --pill-text: rgba(7,24,45,.92);           /* + foncé */
-      --pill-shadow: 0 10px 18px rgba(0,0,0,.12);
-    }
+  --pill-bg:rgba(255,255,255,.38);
+  --pill-border:rgba(0,25,60,.15);
+  --pill-text:#07182d;
+}
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+*{box-sizing:border-box}
+html,body{height:100%}
 
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      background: url("banques.jpg") no-repeat center center fixed;
-      background-size: cover;
-      overflow-x:hidden;
-    }
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--text);
+  background:url("banques.jpg") no-repeat center center fixed;
+  background-size:cover;
+  overflow-x:hidden;
+}
 
-    body::before{
-      content:"";
-      position: fixed;
-      inset:0;
-      background:
-        radial-gradient(900px 500px at 20% 10%, rgba(255,255,255,.14), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.05));
-      z-index:-1;
-    }
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(255,255,255,.14), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.05));
+  z-index:-1;
+}
 
-    .wrap{
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 38px 26px 44px;
-    }
+.wrap{
+  max-width:1180px;
+  margin:0 auto;
+  padding:38px 26px 44px;
+}
 
-    h1{
-      margin:0;
-      font-size: 28px;
-      font-weight: 900;
-      color:#07182d;
-    }
+h1{
+  margin:0;
+  font-size:28px;
+  font-weight:900;
+  color:#07182d;
+}
 
-    .subtitle{
-      margin-top: 6px;
-      font-size: 14px;
-      font-weight: 650;
-      color: var(--muted);
-    }
+.subtitle{
+  margin-top:6px;
+  font-size:14px;
+  font-weight:650;
+  color:var(--muted);
+}
 
-    /* ✅ Dashboard light (discret + lisible) */
-    .dash{
-      margin-top: 12px;
-      display:flex;
-      flex-wrap:wrap;
-      gap: 10px;
-      align-items:center;
-    }
+/* Dashboard */
+.dash{
+  margin-top:12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap: 8px;
-      padding: 8px 11px;
-      border-radius: 999px;
+.pill{
+  display:inline-flex;
+  align-items:center;
+  padding:8px 12px;
+  border-radius:999px;
+  background:var(--pill-bg);
+  border:1px solid var(--pill-border);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  font-size:13px;
+  font-weight:800;
+  color:var(--pill-text);
+  box-shadow:0 8px 18px rgba(0,0,0,.12);
+  white-space:nowrap;
+}
 
-      background: var(--pill-bg);
-      border: 1px solid var(--pill-border);
-      box-shadow: var(--pill-shadow);
+.section{margin-top:26px}
 
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+.section h2{
+  margin:0 0 12px;
+  font-size:16px;
+  font-weight:850;
+  color:#07182d;
+}
 
-      color: var(--pill-text);
-      font-size: 13px;            /* + lisible */
-      font-weight: 800;           /* + lisible */
-      letter-spacing: .1px;
-      white-space: nowrap;
-    }
+.grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--gap);
+}
 
-    .pill .muted{
-      font-weight: 750;
-      opacity: .82;
-    }
+.tile{
+  width:var(--tile-w);
+  height:var(--tile-h);
+  border-radius:var(--radius);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  background:var(--tile-bg);
+  border:1px solid var(--tile-border);
+  box-shadow:var(--shadow-tile);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  text-decoration:none;
+  transition:.18s ease;
+}
 
-    .wxIcon{
-      font-size: 15px;
-      line-height: 1;
-      transform: translateY(1px);
-    }
+.tile:hover{
+  transform:translateY(-3px);
+  background:var(--tile-bg-hover);
+  box-shadow:var(--shadow-tile-hover);
+}
 
-    .section{ margin-top: 26px; }
+.tile img{
+  max-width:100%;
+  max-height:70px;
+  object-fit:contain;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.16));
+}
 
-    .section h2{
-      margin: 0 0 12px;
-      font-size: 16px;
-      font-weight: 850;
-      color:#07182d;
-    }
+/* Responsive */
+@media(max-width:720px){
+  :root{--tile-w:150px;--tile-h:104px}
+}
 
-    .grid{
-      display:flex;
-      flex-wrap:wrap;
-      gap: var(--gap);
-      align-items:flex-start;
-    }
-
-    .tile{
-      width: var(--tile-w);
-      height: var(--tile-h);
-      border-radius: var(--radius);
-
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 14px 14px;
-
-      background: var(--tile-bg);
-      border: 1px solid var(--tile-border);
-      box-shadow: var(--shadow-tile);
-
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-
-      text-decoration:none;
-      color: inherit;
-
-      position: relative;
-      transition: transform .18s cubic-bezier(.2,.8,.2,1),
-                  background .18s ease,
-                  box-shadow .18s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .tile:hover{
-      transform: translateY(-3px);
-      background: var(--tile-bg-hover);
-      box-shadow: var(--shadow-tile-hover);
-    }
-    .tile:active{ transform: translateY(-1px) scale(.99); }
-
-    .tile img{
-      max-width: 100%;
-      max-height: 70px;
-      object-fit: contain;
-      display:block;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.16));
-    }
-
-    /* Tooltip */
-    .tile[data-tip]::after{
-      content: attr(data-tip);
-      position:absolute;
-      left: 50%;
-      bottom: calc(100% + 10px);
-      transform: translateX(-50%);
-      white-space: nowrap;
-      padding: 8px 10px;
-      border-radius: 10px;
-
-      background: rgba(10,20,35,.82);
-      color: rgba(255,255,255,.96);
-      font-size: 12px;
-      font-weight: 650;
-      letter-spacing: .2px;
-
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .14s ease, transform .14s ease;
-    }
-    .tile[data-tip]::before{
-      content:"";
-      position:absolute;
-      left: 50%;
-      bottom: calc(100% + 4px);
-      transform: translateX(-50%);
-      border: 6px solid transparent;
-      border-top-color: rgba(10,20,35,.82);
-
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .14s ease, transform .14s ease;
-    }
-    .tile:hover::after,
-    .tile:hover::before,
-    .tile:focus-visible::after,
-    .tile:focus-visible::before{
-      opacity: 1;
-      transform: translateX(-50%) translateY(-2px);
-    }
-    .tile:focus-visible{
-      outline: 3px solid rgba(36,74,117,.35);
-      outline-offset: 3px;
-    }
-
-    @media (max-width: 720px){
-      :root{ --tile-w: 150px; --tile-h: 104px; --gap: 16px; }
-      .wrap{ padding: 28px 18px 36px; }
-      .tile img{ max-height: 66px; }
-    }
-    @media (max-width: 480px){
-      :root{ --tile-w: 100%; --tile-h: 96px; }
-      .tile{ width: 100%; }
-      .tile img{ max-height: 64px; }
-    }
-  </style>
+@media(max-width:480px){
+  :root{--tile-w:100%;--tile-h:96px}
+  .tile{width:100%}
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Bankinsurance</h1>
-      <div class="subtitle">Banques • Assurances • Accès client</div>
+<div class="wrap">
+<header>
+  <h1>Bankinsurance</h1>
+  <div class="subtitle">Banques • Assurances • Accès client</div>
 
-      <div class="dash" aria-label="Dashboard">
-        <div class="pill" id="dashTime">🕒 <span class="muted">--:--</span></div>
-        <div class="pill" id="dashDate">📅 <span class="muted">--</span></div>
-
-        <!-- ✅ Icône + ville + météo -->
-        <div class="pill" id="dashWx">
-          <span class="wxIcon" id="wxIcon">📍</span>
-          <span class="muted" id="wxText">Météo : …</span>
-        </div>
-      </div>
-    </header>
-
-    <section class="section" aria-label="Banques">
-      <h2>Banques</h2>
-      <div class="grid">
-        <a class="tile" href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes"
-           target="_blank" rel="noopener"
-           aria-label="BNP — Ma banque"
-           data-tip="BNP — Ma banque">
-          <img src="bnpparibas.png" alt="BNP Paribas">
-        </a>
-
-        <a class="tile" href="https://www.banquepopulaire.fr/professionnels/"
-           target="_blank" rel="noopener"
-           aria-label="Banque Populaire — Espace pro"
-           data-tip="Banque Populaire — Espace pro">
-          <img src="banquepopulaire.png" alt="Banque Populaire">
-        </a>
-
-        <a class="tile" href="https://fortuneo.fr"
-           target="_blank" rel="noopener"
-           aria-label="Fortuneo — Banque en ligne"
-           data-tip="Fortuneo — Banque en ligne">
-          <img src="fortuneo.png" alt="Fortuneo">
-        </a>
-      </div>
-    </section>
-
-    <section class="section" aria-label="Assurances">
-      <h2>Assurances</h2>
-      <div class="grid">
-        <a class="tile" href="https://www.matmut.fr/app/login/login?returnurl=https%3A%2F%2Fwww.matmut.fr%2Fapp%2FEspaceSocietaireInternet%2F%23%2Faccueil"
-           target="_blank" rel="noopener"
-           aria-label="Matmut — Espace client"
-           data-tip="Matmut — Espace client">
-          <img src="matmut.png" alt="Matmut">
-        </a>
-
-        <a class="tile" href="https://espace-client.allianz.fr/"
-           target="_blank" rel="noopener"
-           aria-label="Allianz — Espace client"
-           data-tip="Allianz — Espace client">
-          <img src="allianz.png" alt="Allianz">
-        </a>
-      </div>
-    </section>
+  <div class="dash">
+    <div class="pill" id="time">🕒 --:--</div>
+    <div class="pill" id="date">📅 --</div>
+    <div class="pill" id="weather">🌍 Autoriser localisation</div>
   </div>
+</header>
 
-  <script>
-    // Heure + date (FR)
-    const fmtTime = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const fmtDate = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: '2-digit', month: 'long' });
+<section class="section">
+<h2>Banques</h2>
+<div class="grid">
+<a class="tile" href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes" target="_blank"><img src="bnpparibas.png"></a>
+<a class="tile" href="https://www.banquepopulaire.fr/professionnels/" target="_blank"><img src="banquepopulaire.png"></a>
+<a class="tile" href="https://fortuneo.fr" target="_blank"><img src="fortuneo.png"></a>
+</div>
+</section>
 
-    function tick(){
-      const now = new Date();
-      document.getElementById('dashTime').innerHTML = '🕒 <span class="muted">' + fmtTime.format(now) + '</span>';
-      document.getElementById('dashDate').innerHTML = '📅 <span class="muted">' + fmtDate.format(now) + '</span>';
-    }
-    tick();
-    setInterval(tick, 1000 * 15);
+<section class="section">
+<h2>Assurances</h2>
+<div class="grid">
+<a class="tile" href="https://www.matmut.fr/app/login/login" target="_blank"><img src="matmut.png"></a>
+<a class="tile" href="https://espace-client.allianz.fr/" target="_blank"><img src="allianz.png"></a>
+</div>
+</section>
+</div>
 
-    // --- Météo locale (Open-Meteo) + Ville (reverse geocoding) ---
-    const wxTextEl = document.getElementById('wxText');
-    const wxIconEl = document.getElementById('wxIcon');
+<script>
+// Heure / Date
+const fmtTime = new Intl.DateTimeFormat('fr-FR',{hour:'2-digit',minute:'2-digit'});
+const fmtDate = new Intl.DateTimeFormat('fr-FR',{weekday:'long',day:'2-digit',month:'long'});
 
-    function setWx(icon, text){
-      wxIconEl.textContent = icon;
-      wxTextEl.textContent = text;
-    }
+function updateTime(){
+  const now=new Date();
+  document.getElementById("time").textContent="🕒 "+fmtTime.format(now);
+  document.getElementById("date").textContent="📅 "+fmtDate.format(now);
+}
+updateTime();
+setInterval(updateTime,15000);
 
-    const codeToDescFR = (code) => {
-      const map = {
-        0:"Ciel dégagé",
-        1:"Plutôt dégagé", 2:"Partiellement nuageux", 3:"Couvert",
-        45:"Brouillard", 48:"Brouillard givrant",
-        51:"Bruine légère", 53:"Bruine", 55:"Bruine forte",
-        56:"Bruine verglaçante légère", 57:"Bruine verglaçante",
-        61:"Pluie faible", 63:"Pluie", 65:"Pluie forte",
-        66:"Pluie verglaçante faible", 67:"Pluie verglaçante",
-        71:"Neige faible", 73:"Neige", 75:"Neige forte",
-        77:"Grains de neige",
-        80:"Averses faibles", 81:"Averses", 82:"Averses fortes",
-        85:"Averses de neige faibles", 86:"Averses de neige fortes",
-        95:"Orage", 96:"Orage + grêle", 99:"Orage violent + grêle"
-      };
-      return map[code] || "Météo";
-    };
+// Icône météo
+function iconFromCode(c){
+  if(c===0) return "☀️";
+  if(c<=3) return "🌤️";
+  if(c===45||c===48) return "🌫️";
+  if(c>=51&&c<=67||c>=80&&c<=82) return "🌧️";
+  if(c>=71&&c<=77) return "🌨️";
+  if(c>=95) return "⛈️";
+  return "🌡️";
+}
 
-    // Mini icône (emoji) selon weathercode (simple + efficace)
-    const codeToIcon = (code) => {
-      if (code === 0) return "☀️";
-      if (code >= 1 && code <= 3) return "🌤️";
-      if (code === 45 || code === 48) return "🌫️";
-      if ((code >= 51 && code <= 57) || (code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return "🌧️";
-      if (code >= 71 && code <= 77) return "🌨️";
-      if (code >= 95) return "⛈️";
-      return "🌡️";
-    };
+// Reverse geocode double source
+async function getCity(lat,lon){
+  try{
+    const r1=await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=fr`);
+    const j1=await r1.json();
+    const n=j1?.results?.[0]?.name;
+    if(n) return n;
+  }catch{}
+  try{
+    const r2=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=fr`);
+    const j2=await r2.json();
+    const a=j2?.address||{};
+    return a.city||a.town||a.village||a.county||null;
+  }catch{}
+  return null;
+}
 
-    async function reverseGeocodeCity(lat, lon){
-      // Open-Meteo reverse geocoding (sans clé)
-      const url = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=fr`;
-      const r = await fetch(url, { cache: "no-store" });
-      const j = await r.json();
-      const place = j && j.results && j.results[0];
-      if(!place) return null;
-      // place.name + admin1 (région) parfois utile
-      return place.name || null;
-    }
+async function getWeather(lat,lon){
+  const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&windspeed_unit=kmh`);
+  const j=await r.json();
+  const cw=j.current_weather;
+  const city=await getCity(lat,lon);
+  const icon=iconFromCode(cw.weathercode);
+  const text=`${icon} ${city?city+" • ":""}${Math.round(cw.temperature)}°C • Vent ${Math.round(cw.windspeed)} km/h`;
+  document.getElementById("weather").textContent=text;
+}
 
-    async function fetchWeather(lat, lon){
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&windspeed_unit=kmh`;
-      const r = await fetch(url, { cache: "no-store" });
-      const j = await r.json();
-      const cw = j.current_weather;
-      if(!cw) throw new Error("no current_weather");
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(
+    pos=>getWeather(pos.coords.latitude,pos.coords.longitude),
+    ()=>document.getElementById("weather").textContent="📍 Localisation refusée"
+  );
+}
+</script>
 
-      const temp = Math.round(cw.temperature);
-      const wind = Math.round(cw.windspeed);
-      const code = cw.weathercode;
-
-      const desc = codeToDescFR(code);
-      const icon = codeToIcon(code);
-
-      // Ville
-      let city = null;
-      try { city = await reverseGeocodeCity(lat, lon); } catch(e) {}
-      const cityPart = city ? `${city} • ` : "";
-
-      setWx(icon, `${cityPart}${desc} • ${temp}°C • Vent ${wind} km/h`);
-    }
-
-    function askWeather(){
-      setWx("📍", "Météo : autoriser la localisation");
-      if(!navigator.geolocation){
-        setWx("⚠️", "Météo : géoloc indisponible");
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const { latitude, longitude } = pos.coords;
-          setWx("⏳", "Météo : chargement…");
-          fetchWeather(latitude, longitude)
-            .catch(() => setWx("⚠️", "Météo : indisponible"));
-        },
-        (err) => {
-          // Permission refusée / bloquée
-          setWx("📍", "Météo : localisation refusée");
-        },
-        { enableHighAccuracy:false, timeout: 9000, maximumAge: 60 * 60 * 1000 }
-      );
-    }
-
-    askWeather();
-    // Rafraîchit toutes les 30 minutes
-    setInterval(askWeather, 1000 * 60 * 30);
-  </script>
 </body>
 </html>
