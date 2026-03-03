@@ -123,6 +123,8 @@ h1{
   -webkit-backdrop-filter:blur(16px);
   text-decoration:none;
   transition:.18s ease;
+  position:relative; /* ✅ nécessaire pour tooltip */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .tile:hover{
@@ -131,11 +133,59 @@ h1{
   box-shadow:var(--shadow-tile-hover);
 }
 
+.tile:active{ transform: translateY(-1px) scale(.99); }
+
 .tile img{
   max-width:100%;
   max-height:70px;
   object-fit:contain;
   filter:drop-shadow(0 8px 14px rgba(0,0,0,.16));
+}
+
+/* ✅ Tooltip (comme Navimeteo) */
+.tile[data-tip]::after{
+  content: attr(data-tip);
+  position:absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(10,20,35,.82);
+  color: rgba(255,255,255,.96);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .2px;
+  opacity: 0;
+  pointer-events:none;
+  transition: opacity .14s ease, transform .14s ease;
+}
+
+.tile[data-tip]::before{
+  content:"";
+  position:absolute;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(10,20,35,.82);
+  opacity: 0;
+  pointer-events:none;
+  transition: opacity .14s ease, transform .14s ease;
+}
+
+.tile:hover::after,
+.tile:hover::before,
+.tile:focus-visible::after,
+.tile:focus-visible::before{
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.tile:focus-visible{
+  outline: 3px solid rgba(36,74,117,.35);
+  outline-offset: 3px;
 }
 
 /* Responsive */
@@ -163,22 +213,60 @@ h1{
   </div>
 </header>
 
-<section class="section">
+<section class="section" aria-label="Banques">
 <h2>Banques</h2>
 <div class="grid">
-<a class="tile" href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes" target="_blank"><img src="bnpparibas.png"></a>
-<a class="tile" href="https://www.banquepopulaire.fr/professionnels/" target="_blank"><img src="banquepopulaire.png"></a>
-<a class="tile" href="https://fortuneo.fr" target="_blank"><img src="fortuneo.png"></a>
+
+  <a class="tile"
+     href="https://mabanque.bnpparibas/fr/gerer/comptes-et-formules/gerer-ses-comptes"
+     target="_blank" rel="noopener"
+     aria-label="BNP — Ma banque"
+     data-tip="BNP — Ma banque">
+    <img src="bnpparibas.png" alt="BNP Paribas">
+  </a>
+
+  <a class="tile"
+     href="https://www.banquepopulaire.fr/professionnels/"
+     target="_blank" rel="noopener"
+     aria-label="Banque Populaire — Espace pro"
+     data-tip="Banque Populaire — Espace pro">
+    <img src="banquepopulaire.png" alt="Banque Populaire">
+  </a>
+
+  <a class="tile"
+     href="https://fortuneo.fr"
+     target="_blank" rel="noopener"
+     aria-label="Fortuneo — Banque en ligne"
+     data-tip="Fortuneo — Banque en ligne">
+    <img src="fortuneo.png" alt="Fortuneo">
+  </a>
+
 </div>
 </section>
 
-<section class="section">
+<section class="section" aria-label="Assurances">
 <h2>Assurances</h2>
 <div class="grid">
-<a class="tile" href="https://www.matmut.fr/app/login/login" target="_blank"><img src="matmut.png"></a>
-<a class="tile" href="https://espace-client.allianz.fr/" target="_blank"><img src="allianz.png"></a>
+
+  <a class="tile"
+     href="https://www.matmut.fr/app/login/login"
+     target="_blank" rel="noopener"
+     aria-label="Matmut — Espace client"
+     data-tip="Matmut — Espace client">
+    <img src="matmut.png" alt="Matmut">
+  </a>
+
+  <a class="tile"
+     href="https://espace-client.allianz.fr/"
+     target="_blank" rel="noopener"
+     aria-label="Allianz — Espace client"
+     data-tip="Allianz — Espace client">
+    <img src="allianz.png" alt="Allianz">
+  </a>
+
 </div>
 </section>
+
 </div>
 
 <script>
@@ -199,7 +287,7 @@ function iconFromCode(c){
   if(c===0) return "☀️";
   if(c<=3) return "🌤️";
   if(c===45||c===48) return "🌫️";
-  if(c>=51&&c<=67||c>=80&&c<=82) return "🌧️";
+  if((c>=51&&c<=67) || (c>=80&&c<=82)) return "🌧️";
   if(c>=71&&c<=77) return "🌨️";
   if(c>=95) return "⛈️";
   return "🌡️";
@@ -208,22 +296,22 @@ function iconFromCode(c){
 // Reverse geocode double source
 async function getCity(lat,lon){
   try{
-    const r1=await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=fr`);
+    const r1=await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=fr`, { cache:"no-store" });
     const j1=await r1.json();
     const n=j1?.results?.[0]?.name;
     if(n) return n;
   }catch{}
   try{
-    const r2=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=fr`);
+    const r2=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=fr`, { cache:"no-store" });
     const j2=await r2.json();
     const a=j2?.address||{};
-    return a.city||a.town||a.village||a.county||null;
+    return a.city||a.town||a.village||a.hamlet||a.suburb||a.county||null;
   }catch{}
   return null;
 }
 
 async function getWeather(lat,lon){
-  const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&windspeed_unit=kmh`);
+  const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&windspeed_unit=kmh`, { cache:"no-store" });
   const j=await r.json();
   const cw=j.current_weather;
   const city=await getCity(lat,lon);
